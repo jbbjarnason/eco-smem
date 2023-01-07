@@ -14,8 +14,7 @@
         "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg-sysroot",
         "VCPKG_OVERLAY_PORTS": "${sourceDir}/vcpkg-overlays/ports",
         "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/vcpkg-overlays/triplets",
-        "VCPKG_TARGET_TRIPLET": "x64-linux-clang",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "${sourceDir}/cmake/toolchains/x64-linux-clang.cmake"
+        "VCPKG_TARGET_TRIPLET": "x64-linux"
       }
     },
     {
@@ -59,7 +58,11 @@
     },
     {
       "name": "dev",
-      "inherits": ["ci-build", "ci-unix", "ci-clang", "vcpkg"]
+      "inherits": [
+        "ci-build",
+        "ci-unix",
+        "vcpkg"
+      ]
     }
   ]
 }
