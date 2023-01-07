@@ -1,0 +1,10 @@
+{
+  "name": "eco-smem",
+  "version-semver": "0.1.0",
+  "dependencies": [
+    "fmt",
+    "boost-asio",
+    "boost-interprocess"
+  ],
+  "builtin-baseline": "62d01b70df227850b728f5050418b917ad6d2b32"
+}
