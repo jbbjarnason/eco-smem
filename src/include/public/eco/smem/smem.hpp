@@ -20,9 +20,11 @@ enum struct access_type : std::uint8_t {
 
 namespace detail {
 
-[[nodiscard]] inline std::expected<boost::interprocess::shared_memory_object,
-                            boost::interprocess::error_code_t>
-create_boost_smem(std::string_view name, access_type a_t) noexcept {
+template<typename string_t> // todo requires
+[[nodiscard]] inline constexpr std::expected<
+    boost::interprocess::shared_memory_object,
+    boost::interprocess::error_code_t>
+create_boost_smem(string_t name, access_type a_t) noexcept {
   namespace bi = boost::interprocess;
   try {
     switch (a_t) {
@@ -62,10 +64,13 @@ template <access_type a_t, concepts::serializable_structure structure_t,
           extstl::basic_fixed_string path = "/var/eco/smem/">
 class shared_memory {
 public:
-  constexpr shared_memory() = default;
+  constexpr shared_memory() noexcept : data_{}, smem_{detail::create_boost_smem(name, a_t)} {}
 
 private:
-  structure_t data;
+  structure_t data_;
+  std::expected<
+      boost::interprocess::shared_memory_object,
+      boost::interprocess::error_code_t> smem_{};
 };
 
 /// @brief reader
