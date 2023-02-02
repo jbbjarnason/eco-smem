@@ -7,20 +7,20 @@
 
 namespace eco::extstl {
 
-template <typename CharType, unsigned N> struct basic_fixed_string {
+template <typename CharType, unsigned N> struct [[nodiscard]] basic_fixed_string {
   using char_type = CharType;
 
   char_type data_[N + 1]{};
 
-  constexpr unsigned size() const noexcept { return N; }
+  [[nodiscard]] constexpr unsigned size() const noexcept { return N; }
 
-  constexpr char_type const *begin() const noexcept { return &data_[0]; }
+  [[nodiscard]] constexpr char_type const *begin() const noexcept { return &data_[0]; }
 
-  constexpr char_type *data() noexcept { return &data_[0]; }
+  [[nodiscard]] constexpr char_type *data() noexcept { return &data_[0]; }
 
-  constexpr char_type const *data() const noexcept { return &data_[0]; }
+  [[nodiscard]] constexpr char_type const *data() const noexcept { return &data_[0]; }
 
-  constexpr char_type const *end() const noexcept { return &data_[N]; }
+  [[nodiscard]] constexpr char_type const *end() const noexcept { return &data_[N]; }
 
   constexpr basic_fixed_string() noexcept : data_{} {}
 
@@ -28,6 +28,16 @@ template <typename CharType, unsigned N> struct basic_fixed_string {
   requires std::same_as<other_char_type, char_type>
   constexpr basic_fixed_string(const other_char_type (&foo)[N + 1]) noexcept {
     std::copy_n(foo, N + 1, data_);
+  }
+
+  
+
+  template <unsigned other_size>
+  requires (N > other_size)
+  constexpr basic_fixed_string& operator=(basic_fixed_string<CharType, other_size>&& rhs) noexcept {
+    data_ = {0};
+    std::move(std::begin(rhs), std::end(rhs), std::begin(data_));
+    return *this;
   }
 
   template <typename other_char_type>

@@ -13,6 +13,7 @@
 
 #include <boost/interprocess/mapped_region.hpp>
 #include <boost/interprocess/shared_memory_object.hpp>
+#include <boost/interprocess/file_mapping.hpp>
 
 namespace eco::smem {
 
@@ -101,8 +102,9 @@ public:
       namespace bi = boost::interprocess;
       if (is_open())
         bi::shared_memory_object::remove(name.data());
+    } else if constexpr (a_t == access_type::read_write_share) {
+      // todo what to do for read_write_shared? remove or not? reference count
     }
-    // todo what to do for read_write_shared? remove or not? reference count
     // memory?
   }
 
@@ -118,7 +120,7 @@ public:
   }
 
   constexpr boost::interprocess::error_code_t
-  write(structure_t const &value) noexcept { // todo also accept rvalue
+  write(std::convertible_to<structure_t> auto const& value) noexcept { // todo also accept rvalue
     if constexpr (a_t == access_type::read) {
       []<bool flag = false>() {
         static_assert(flag, "Cannot write with only read privileges");
